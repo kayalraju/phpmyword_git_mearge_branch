@@ -1,0 +1,94 @@
+config/db.php
+
+These variables store your database connection details:
+
+$host → where MySQL server is running (localhost = your machine)
+$db → database name (mywork)
+$user → MySQL username
+$pass → MySQL password
+
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+This tells PDO:
+“If any database error happens, throw an exception”
+ Why important?
+Helps debugging
+Prevents silent failures
+Works with try-catch
+-------------------------------------------------------------------------------------------------------------------------
+action/insert.php
+Prepare SQL Query
+$stmt = $pdo->prepare("INSERT INTO employees(name,email,status) VALUES(?,?,?)");
+
+ This creates a prepared statement
+
+What does (?,?,?) mean?
+
+These are placeholders for values.
+
+✔ Benefits:
+
+Prevents SQL Injection
+Separates query from data
+Faster for repeated queries
+
+$_POST → gets user input
+prepare() → creates secure SQL query
+? → placeholders
+execute() → binds values + runs query
+Prevents SQL injection
+--------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE employees ADD remember_token VARCHAR(255) NULL
+----------------------------------------------------------------------------------------------
+login section::
+
+$email = trim($_POST['email'] ?? '');
+$password = $_POST['password'] ?? '';
+$remember = isset($_POST['remember']);
+
+👉 $_POST['email'] → user input
+👉 trim() → removes spaces
+
+👉 ?? ''
+
+If not set → default empty string
+Prevents undefined errors
+
+👉 $remember
+
+true if checkbox checked
+false if not
+
+session_regenerate_id(true);
+
+👉 Prevents session fixation attack
+👉 Creates new session ID after login
+if($remember){
+
+👉 If checkbox is checked
+
+🔸 8.1 Save Email Cookie
+setcookie("remember_email", $email, time()+604800, "/");
+
+👉 Saves email for 7 days
+👉 Used for autofill
+
+🔸 8.2 Generate Token
+$token = bin2hex(random_bytes(32));
+
+👉 Creates secure random string
+
+If NOT Remember
+else {
+    setcookie("remember_email", "", time()-3600, "/");
+    setcookie("remember_token", "", time()-3600, "/");
+}
+
+👉 Deletes cookies
+
+👉 time()-3600 = expired → browser removes it
+
+htmlspecialchars() is a security function in PHP used to prevent XSS (Cross-Site Scripting) when displaying user data in HTML.
+
+Simple Meaning
+
+👉 It converts special characters into safe HTML entities
