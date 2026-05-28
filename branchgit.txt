@@ -1,5 +1,7 @@
-feature 1
+feature 1 -> for example this line geting bugs nou we fixed
 feature 2
 feature 3
 
-feature 4
+
+fixt confic feature 4
+
